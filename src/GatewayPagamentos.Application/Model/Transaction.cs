@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace GatewayPagamentos.Application.Model
@@ -5,7 +6,7 @@ namespace GatewayPagamentos.Application.Model
     public class Transaction
     {
         public TransactionStatus Status { get; set; }
-        public List<int> Installments { get; set; }
+        public List<Installment> Installments { get; set; }
 
         public Transaction()
         {
@@ -13,7 +14,20 @@ namespace GatewayPagamentos.Application.Model
         }
         public Transaction(int numberOfInstallments)
         {
-            Installments = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+            Installments = CreateInstallments(numberOfInstallments, InstallmentStatus.WaitForPayment);
+        }
+
+        private List<Installment> CreateInstallments(int numberOfInstallments, InstallmentStatus installmentStatus)
+        {
+            var installments = new List<Installment>();
+            for (int i = 0; i < numberOfInstallments; i++)
+            {
+                installments.Add(new Installment
+                {
+                    Status = installmentStatus
+                });
+            }
+            return installments;
         }
     }
 }
