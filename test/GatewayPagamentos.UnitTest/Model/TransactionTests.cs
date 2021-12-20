@@ -14,11 +14,18 @@ namespace GatewayPagamentos.UnitTest.Model
         }
 
         [Fact]
-        public void ShouldCreateATransactionWithAListOfInstallments(int totalOfInstalmments)
+        public void ShouldCreateATransactionWithAListOfInstallments()
         {
             var transaction = new Transaction(24);
             transaction.Installments.Should().NotBeEmpty()
                 .And.HaveCount(24);
+        }
+
+        [Fact]
+        public void ShouldCreateAllInstallmentsWithStatusWaitForPayment()
+        {
+            var transaction = new Transaction(24);
+            transaction.Installments.Should().OnlyContain(instalment => instalment.Status == InstallmentStatus.WaitForPayment);
         }
     }
 }
