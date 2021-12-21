@@ -85,8 +85,7 @@ jobs:
           $result=$(git log -1 --oneline) -match "chore\(release\): \d+\.\d+\.\d+"
           echo $result
           Write-Host "##vso[task.setvariable variable=isBumpedVersion]$result"
-          echo "Valor inicial: ${{ variables.isBumpedVersion }}"
-          echo "Valor final: $(isBumpedVersion)"
+          echo "Valor final: '$(isBumpedVersion)'"
 
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
