@@ -105,7 +105,7 @@ jobs:
         installationPath: $(Agent.ToolsDirectory)/dotnet
 
     - task: DotNetCoreCLI@2
-      condition: ne('$(isBumpedVersion)', 'False')
+      condition: eq('$(isBumpedVersion)', 'False')
       displayName: Install versionize
       inputs:
         command: 'custom'
@@ -113,21 +113,21 @@ jobs:
         arguments: 'install --global Versionize'
 
     - task: PowerShell@2
-      condition: ne('$(isBumpedVersion)', 'False')
+      condition: eq('$(isBumpedVersion)', 'False')
       displayName: Set Repository
       inputs:
         targetType: 'inline'
         script: 'git remote set-url origin https://github.com/deividbatfish2/conventional-commits.git'
 
     - task: PowerShell@2
-      condition: ne('$(isBumpedVersion)', 'False')
+      condition: eq('$(isBumpedVersion)', 'False')
       displayName: Set Commiter
       inputs:
         targetType: 'inline'
         script: 'git config user.name XablauT ; git config user.email hebin80893@ztymm.com'
 
     - task: PowerShell@2
-      condition: ne('$(isBumpedVersion)', 'False')
+      condition: eq('$(isBumpedVersion)', 'False')
       displayName: Bumped Version
       inputs:
         targetType: 'inline'
@@ -181,7 +181,7 @@ jobs:
         publishLocation: 'Container'
     
     - task: PowerShell@2
-      condition: ne('$(isBumpedVersion)', 'False')
+      condition: eq('$(isBumpedVersion)', 'False')
       displayName: Update release
       inputs:
         targetType: 'inline'
