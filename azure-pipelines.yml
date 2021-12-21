@@ -68,7 +68,7 @@ jobs:
         targetType: 'inline'
         script: |
           git config credential.helper "store --file=.git/credentials";
-          echo "https://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:@github.com" > .git/credentials;
+          echo "https://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:@github.com" > .git/credentials;
       
     - task: PowerShell@2
       displayName: SET PR REASON
