@@ -16,7 +16,7 @@ variables:
   - name: buildConfiguration
     value: 'release'
   - name: isBumpedVersion
-    value: False
+    value: True
 
 jobs:
  - job: Run_Unit_Tests_on_PR_to_develop
@@ -84,9 +84,9 @@ jobs:
         targetType: 'inline'
         script: |
           git log -1 --oneline
-          Write-Host "##vso[task.setvariable variable=isBumpedVersion] $(git log -1 --oneline) -match 'chore\(release\): \d+\.\d+\.\d+'"
+          Write-Host "##vso[task.setvariable variable=isBumpedVersion]$(git log -1 --oneline) -match 'chore\(release\): \d+\.\d+\.\d+'"
           echo "Valor inicial: ${{ variables.isBumpedVersion }}"
-          echo "Valor final: '$(isBumpedVersion)'"
+          echo "Valor final: $(isBumpedVersion)"
 
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
