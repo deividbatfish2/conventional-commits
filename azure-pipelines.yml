@@ -20,9 +20,10 @@ jobs:
     
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
-      input: sdk
-      version: 5.x
-      installationPath: $(Agent.ToolsDirectory)/dotnet
+      inputs:
+        packageType: sdk
+        version: 5.x
+        installationPath: $(Agent.ToolsDirectory)/dotnet
     
     - task: DotNetCoreCLI@2
       displayName: Restore Test Project
@@ -38,7 +39,7 @@ jobs:
         arguments: --no-restore --configuration $(buildConfiguration)
     
     - task: DotNetCoreCLI@2
-      display: Run Unit Tests
+      displayName: Run Unit Tests
       inputs:
         command: 'test'
         projects: '$(unitTestProjectPath)'
@@ -57,18 +58,19 @@ jobs:
    steps:
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
-      input: sdk
-      version: 5.x
-      installationPath: $(Agent.ToolsDirectory)/dotnet
+      inputs:
+        packageType: sdk
+        version: 5.x
+        installationPath: $(Agent.ToolsDirectory)/dotnet
 
     - task: DotNetCoreCLI@2
-      dislayName: Install versionize
+      displayName: Install versionize
       inputs:
         command: 'custom'
         custom: 'dotnet tool install --global Versionize'
 
     - task: DotNetCoreCLI@2
-      dislayName: Bumped Version
+      displayName: Bumped Version
       inputs:
         command: 'custom'
         custom: 'dotnet versionize'
@@ -87,7 +89,7 @@ jobs:
         arguments: --no-restore --configuration $(buildConfiguration)
     
     - task: DotNetCoreCLI@2
-      display: Run Unit Tests
+      displayName: Run Unit Tests
       inputs:
         command: 'test'
         projects: '$(unitTestProjectPath)'
