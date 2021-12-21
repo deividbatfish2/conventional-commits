@@ -142,6 +142,6 @@ jobs:
       displayName: Update release
       inputs:
         targetType: 'inline'
-        script: 'git push --follow-tags origin $(variables["system.pullRequest.sourceBranch"])'
+        script: 'git push --follow-tags origin $(system.pullRequest.sourceBranch)'
       
       
