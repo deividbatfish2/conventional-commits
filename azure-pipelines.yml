@@ -70,6 +70,13 @@ jobs:
         script: |
           git config credential.helper "store --file=.git/credentials";
           echo "https://$(GIT_HUB_TOKEN):@github.com" > .git/credentials;
+    
+    - task: PowerShell@2
+      condition: ne('$(isBumpedVersion)', 'False')
+      displayName: Checkout $(system.pullRequest.sourceBranch)
+      inputs:
+        targetType: 'inline'
+        script: 'git checkout $(system.pullRequest.sourceBranch)'
       
     - task: PowerShell@2
       displayName: SET PR REASON
@@ -95,13 +102,6 @@ jobs:
         command: 'custom'
         custom: 'tool'
         arguments: 'install --global Versionize'
-    
-    - task: PowerShell@2
-      condition: ne('$(isBumpedVersion)', 'False')
-      displayName: Checkout $(system.pullRequest.sourceBranch)
-      inputs:
-        targetType: 'inline'
-        script: 'git checkout $(system.pullRequest.sourceBranch)'
 
     - task: PowerShell@2
       condition: ne('$(isBumpedVersion)', 'False')
