@@ -60,6 +60,18 @@ jobs:
         input: sdk
         version: 5.x
         installationPath: $(Agent.ToolsDirectory)/dotnet
+
+      - task: DotNetCoreCLI@2
+        dislayName: Install versionize
+        inputs:
+          command: 'custom'
+          custom: 'dotnet tool install --global Versionize'
+
+      - task: DotNetCoreCLI@2
+        dislayName: Bumped Version
+        inputs:
+          command: 'custom'
+          custom: 'dotnet versionize'
       
       - task: DotNetCoreCLI@2
         displayName: Restore Test Project
@@ -101,9 +113,16 @@ jobs:
           arguments: --no-restore --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/GatewayPagamentos.Application
       
       - task: PublishBuildArtifacts@1
+        displayName: Publish Artifacts
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)/GatewayPagamentos.Application'
           ArtifactName: 'drop'
           publishLocation: 'Container'
+      
+      - task: PowerShell@2
+        displayName: Update release
+        inputs:
+          targetType: 'inline'
+          script: 'git push --follow-tags origin $(variables[''System.PullRequest.SourceBranch''])'
       
       
