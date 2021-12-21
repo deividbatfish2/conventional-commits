@@ -20,9 +20,10 @@ jobs:
     
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
-      input: sdk
-      version: 5.x
-      installationPath: $(Agent.ToolsDirectory)/dotnet
+      inputs:
+        packageType: sdk
+        version: 5.x
+        installationPath: $(Agent.ToolsDirectory)/dotnet
     
     - task: DotNetCoreCLI@2
       displayName: Restore Test Project
@@ -38,7 +39,7 @@ jobs:
         arguments: --no-restore --configuration $(buildConfiguration)
     
     - task: DotNetCoreCLI@2
-      display: Run Unit Tests
+      displayName: Run Unit Tests
       inputs:
         command: 'test'
         projects: '$(unitTestProjectPath)'
@@ -52,77 +53,78 @@ jobs:
         summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
   
  - job: Build Application
-    # Run only on PRs to develop since the pull request origin don't be the main branch
-    condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    steps:
-      - task: UseDotNet@2
-        displayName: Use dotnet core SDK 5
-        input: sdk
+   # Run only on PRs to develop since the pull request origin don't be the main branch
+   condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+   steps:
+    - task: UseDotNet@2
+      displayName: Use dotnet core SDK 5
+      inputs:
+        packageType: sdk
         version: 5.x
         installationPath: $(Agent.ToolsDirectory)/dotnet
 
-      - task: DotNetCoreCLI@2
-        dislayName: Install versionize
-        inputs:
-          command: 'custom'
-          custom: 'dotnet tool install --global Versionize'
+    - task: DotNetCoreCLI@2
+      displayName: Install versionize
+      inputs:
+        command: 'custom'
+        custom: 'dotnet tool install --global Versionize'
 
-      - task: DotNetCoreCLI@2
-        dislayName: Bumped Version
-        inputs:
-          command: 'custom'
-          custom: 'dotnet versionize'
-      
-      - task: DotNetCoreCLI@2
-        displayName: Restore Test Project
-        inputs:
-          command: 'restore'
-          projects: '$(unitTestProjectPath)'
-      
-      - task: DotNetCoreCLI@2
-        displayName: Build Test Project
-        inputs:
-          command: 'build'
-          projects: '$(unitTestProjectPath)'
-          arguments: --no-restore --configuration $(buildConfiguration)
-      
-      - task: DotNetCoreCLI@2
-        display: Run Unit Tests
-        inputs:
-          command: 'test'
-          projects: '$(unitTestProjectPath)'
-          arguments: --collect:"XPlat Code Coverage" --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
-          publishTestResults: true
+    - task: DotNetCoreCLI@2
+      displayName: Bumped Version
+      inputs:
+        command: 'custom'
+        custom: 'dotnet versionize'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Restore Test Project
+      inputs:
+        command: 'restore'
+        projects: '$(unitTestProjectPath)'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Build Test Project
+      inputs:
+        command: 'build'
+        projects: '$(unitTestProjectPath)'
+        arguments: --no-restore --configuration $(buildConfiguration)
+    
+    - task: DotNetCoreCLI@2
+      displayName: Run Unit Tests
+      inputs:
+        command: 'test'
+        projects: '$(unitTestProjectPath)'
+        arguments: --collect:"XPlat Code Coverage" --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+        publishTestResults: true
 
-      - task: PublishCodeCoverageResults@1
-        displayName: 'Publish code coverage report'
-        inputs:
-          codeCoverageTool: 'Cobertura'
-      
-      - task: DotNetCoreCLI@2
-        displayName: Restore Application Project
-        inputs:
-          command: 'restore'
-          projects: '$(applicationProjectPath)'
-      
-      - task: DotNetCoreCLI@2
-        displayName: Build Application Project
-        inputs:
-          command: 'build'
-          projects: '$(applicationProjectPath)'
-          arguments: --no-restore --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/GatewayPagamentos.Application
-      
-      - task: PublishBuildArtifacts@1
-        displayName: Publish Artifacts
-        inputs:
-          PathtoPublish: '$(Build.ArtifactStagingDirectory)/GatewayPagamentos.Application'
-          ArtifactName: 'drop'
-          publishLocation: 'Container'
-      
-      - task: PowerShell@2
-        displayName: Update release
-        inputs:
-          targetType: 'inline'
-          script: 'git push --follow-tags origin $(variables[''System.PullRequest.SourceBranch''])'
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage report'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Restore Application Project
+      inputs:
+        command: 'restore'
+        projects: '$(applicationProjectPath)'
+    
+    - task: DotNetCoreCLI@2
+      displayName: Build Application Project
+      inputs:
+        command: 'build'
+        projects: '$(applicationProjectPath)'
+        arguments: --no-restore --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/GatewayPagamentos.Application
+    
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Artifacts
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/GatewayPagamentos.Application'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+    
+    - task: PowerShell@2
+      displayName: Update release
+      inputs:
+        targetType: 'inline'
+        script: 'git push --follow-tags origin $(variables[''System.PullRequest.SourceBranch''])'
       
       
