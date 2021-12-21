@@ -72,7 +72,7 @@ jobs:
           echo "https://$(GIT_HUB_TOKEN):@github.com" > .git/credentials;
     
     - task: PowerShell@2
-      condition: ne('$(isBumpedVersion)', 'False')
+      condition: eq('$(isBumpedVersion)', 'False')
       displayName: Checkout $(system.pullRequest.sourceBranch)
       inputs:
         targetType: 'inline'
@@ -105,7 +105,7 @@ jobs:
         installationPath: $(Agent.ToolsDirectory)/dotnet
 
     - task: DotNetCoreCLI@2
-      condition: eq('$(isBumpedVersion)', False)
+      condition: eq('$(isBumpedVersion)', "False")
       displayName: Install versionize
       inputs:
         command: 'custom'
