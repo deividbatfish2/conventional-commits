@@ -15,8 +15,6 @@ variables:
     value: '**/*.UnitTest/*.csproj'
   - name: buildConfiguration
     value: 'release'
-  - name: isBumpedVersion
-    value: True
 
 jobs:
  - job: Run_Unit_Tests_on_PR_to_develop
