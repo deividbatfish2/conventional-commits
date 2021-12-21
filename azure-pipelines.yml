@@ -70,7 +70,8 @@ jobs:
       displayName: Install versionize
       inputs:
         command: 'custom'
-        custom: 'tool install --global Versionize'
+        custom: 'tool'
+        arguments: 'install --global Versionize'
 
     - task: DotNetCoreCLI@2
       displayName: Bumped Version
