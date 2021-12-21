@@ -73,11 +73,11 @@ jobs:
         custom: 'tool'
         arguments: 'install --global Versionize'
 
-    - task: DotNetCoreCLI@2
+    - task: PowerShell@2
       displayName: Bumped Version
       inputs:
-        command: 'custom'
-        custom: 'versionize'
+        targetType: 'inline'
+        script: 'versionize'
     
     - task: DotNetCoreCLI@2
       displayName: Restore Test Project
