@@ -53,7 +53,7 @@ jobs:
       displayName: 'Publish code coverage report'
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        summaryFileLocation: '**/*/coverage.cobertura.xml'
   
  - job: Build_Application
    # Run only on PRs to develop since the pull request origin don't be the main branch
@@ -103,6 +103,7 @@ jobs:
       displayName: 'Publish code coverage report'
       inputs:
         codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '**/*/coverage.cobertura.xml'
     
     - task: DotNetCoreCLI@2
       displayName: Restore Application Project
