@@ -53,7 +53,7 @@ jobs:
       displayName: 'Publish code coverage report'
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        summaryFileLocation: '**/*/coverage.cobertura.xml'
   
  - job: Build_Application
    # Run only on PRs to develop since the pull request origin don't be the main branch
@@ -70,13 +70,13 @@ jobs:
       displayName: Install versionize
       inputs:
         command: 'custom'
-        custom: 'dotnet tool install --global Versionize'
+        custom: 'tool install --global Versionize'
 
     - task: DotNetCoreCLI@2
       displayName: Bumped Version
       inputs:
         command: 'custom'
-        custom: 'dotnet versionize'
+        custom: 'versionize'
     
     - task: DotNetCoreCLI@2
       displayName: Restore Test Project
@@ -103,6 +103,7 @@ jobs:
       displayName: 'Publish code coverage report'
       inputs:
         codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '**/*/coverage.cobertura.xml'
     
     - task: DotNetCoreCLI@2
       displayName: Restore Application Project
