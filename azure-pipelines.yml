@@ -87,8 +87,15 @@ jobs:
           RESULT=$(echo "$(git log -1 --oneline)" | grep -o -E "chore\(release\):\s[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}" && echo "True" || echo "False")
           RESULT=$(echo $RESULT | grep -o -E "True|False")
           echo "result: $RESULT"
-          echo "##vso[task.setvariable variable=isBumpedVersion]$RESULT"
+          echo '##vso[task.setvariable variable=isBumpedVersion]$RESULT'
           echo "Valor final: $(isBumpedVersion)"
+    
+    - task: Bash@3
+      displayName: Teste
+      inputs:
+        targetType: 'inline'
+        script: |
+          echo "Valor final: '$(isBumpedVersion)'"
 
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
