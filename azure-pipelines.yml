@@ -18,7 +18,7 @@ variables:
 jobs:
  - job: Run_Unit_Tests_on_PR_to_develop
    # Run only on PRs to develop since the pull request origin don't be the main branch
-   condition: and(eq(variables['Build.Reason'], 'PullRequest'), and(eq(variables['Build.SourceBranch'], 'refs/heads/develop'), ne(variables['System. PullRequest. SourceBranch'], 'refs/heads/main')))
+   condition: and(eq(variables['Build.Reason'], 'PullRequest'), and(eq(variables['system.pullRequest.targetBranch'], 'develop'), ne(variables['system.pullRequest.sourceBranch'], 'main')))
    steps:
     
     - task: UseDotNet@2
@@ -57,7 +57,7 @@ jobs:
   
  - job: Build_Application
    # Run only on PRs to develop since the pull request origin don't be the main branch
-   condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+   condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['system.pullRequest.targetBranch'], 'main'))
    steps:
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
