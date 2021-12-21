@@ -74,6 +74,12 @@ jobs:
         arguments: 'install --global Versionize'
 
     - task: PowerShell@2
+      displayName: Set Repository
+      inputs:
+        targetType: 'inline'
+        script: 'git remote set-url origin https://github.com/deividbatfish2/conventional-commits.git'
+
+    - task: PowerShell@2
       displayName: Bumped Version
       inputs:
         targetType: 'inline'
