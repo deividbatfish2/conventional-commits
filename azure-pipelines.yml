@@ -15,6 +15,8 @@ variables:
     value: '**/*.UnitTest/*.csproj'
   - name: buildConfiguration
     value: 'release'
+  - name: isBumpedVersion
+    value: True 
 
 jobs:
  - job: Run_Unit_Tests_on_PR_to_develop
@@ -76,15 +78,15 @@ jobs:
         targetType: 'inline'
         script: 'git checkout $(system.pullRequest.sourceBranch)'
       
-    - task: PowerShell@2
+    - task: Bash@3
       displayName: SET PR REASON
       inputs:
         targetType: 'inline'
         script: |
           git log -1 --oneline
-          $result=$(git log -1 --oneline) -match "chore\(release\): \d+\.\d+\.\d+"
-          echo "result: $result"
-          Write-Host "##vso[task.setvariable variable=isBumpedVersion]$result"
+          RESULT=$(git log -1 --oneline) -match "chore\(release\): \d+\.\d+\.\d+"
+          echo "result: $RESULT"
+          echo "##vso[task.setvariable variable=isBumpedVersion]$RESULT"
           echo "Valor final: $(isBumpedVersion)"
 
     - task: UseDotNet@2
