@@ -70,13 +70,13 @@ jobs:
       displayName: Install versionize
       inputs:
         command: 'custom'
-        custom: 'dotnet tool install --global Versionize'
+        custom: 'tool install --global Versionize'
 
     - task: DotNetCoreCLI@2
       displayName: Bumped Version
       inputs:
         command: 'custom'
-        custom: 'dotnet versionize'
+        custom: 'versionize'
     
     - task: DotNetCoreCLI@2
       displayName: Restore Test Project
