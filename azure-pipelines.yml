@@ -80,6 +80,12 @@ jobs:
         script: 'git remote set-url origin https://github.com/deividbatfish2/conventional-commits.git'
 
     - task: PowerShell@2
+      displayName: Set Repository
+      inputs:
+        targetType: 'inline'
+        script: 'git config user.name "Deivid Teixeira" ; git config user.email deivid.teixeira@stone.com.br'
+
+    - task: PowerShell@2
       displayName: Bumped Version
       inputs:
         targetType: 'inline'
