@@ -83,7 +83,7 @@ jobs:
         script: |
           git log -1 --oneline
           $result=$(git log -1 --oneline) -match "chore\(release\): \d+\.\d+\.\d+"
-          echo $result
+          echo "result: $result"
           Write-Host "##vso[task.setvariable variable=isBumpedVersion]$result"
           echo "Valor final: $(isBumpedVersion)"
 
