@@ -84,7 +84,7 @@ jobs:
         targetType: 'inline'
         script: |
           git log -1 --oneline
-          RESULT=$(git log -1 --oneline) =~ "chore\(release\): \d+\.\d+\.\d+"
+          RESULT=(echo "$(git log -1 --oneline)" | grep -Eq  ^.+chore\(release\): \d+\.\d+\.\d+$) && "True" || "False"
           echo "result: $RESULT"
           echo "##vso[task.setvariable variable=isBumpedVersion]$RESULT"
           echo "Valor final: $(isBumpedVersion)"
