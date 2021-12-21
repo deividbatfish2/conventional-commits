@@ -70,7 +70,7 @@ jobs:
           git log -1 --oneline
           Write-Host "##vso[task.setvariable variable=isBumpedVersion] $(git log -1 --oneline) -match 'chore\(release\): \d+\.\d+\.\d+'"
           echo "Valor inicial: ${{ variables.isBumpedVersion }}"
-          echo "Valor final: $(isBumpedVersion)"
+          echo "Valor final: '$(isBumpedVersion)'"
 
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
@@ -88,28 +88,28 @@ jobs:
         arguments: 'install --global Versionize'
     
     - task: PowerShell@2
-      condition: ne($(isBumpedVersion), 'False')
+      condition: ne('$(isBumpedVersion)', 'False')
       displayName: Checkout $(system.pullRequest.sourceBranch)
       inputs:
         targetType: 'inline'
         script: 'git checkout $(system.pullRequest.sourceBranch)'
 
     - task: PowerShell@2
-      condition: ne($(isBumpedVersion), 'False')
+      condition: ne('$(isBumpedVersion)', 'False')
       displayName: Set Repository
       inputs:
         targetType: 'inline'
         script: 'git remote set-url origin https://github.com/deividbatfish2/conventional-commits.git'
 
     - task: PowerShell@2
-      condition: ne($(isBumpedVersion), 'False')
+      condition: ne('$(isBumpedVersion)', 'False')
       displayName: Set Commiter
       inputs:
         targetType: 'inline'
         script: 'git config user.name "Deivid Teixeira" ; git config user.email deivid.teixeira@stone.com.br'
 
     - task: PowerShell@2
-      condition: ne($(isBumpedVersion), 'False')
+      condition: ne('$(isBumpedVersion)', 'False')
       displayName: Bumped Version
       inputs:
         targetType: 'inline'
@@ -163,7 +163,7 @@ jobs:
         publishLocation: 'Container'
     
     - task: PowerShell@2
-      condition: ne($(isBumpedVersion), 'False')
+      condition: ne('$(isBumpedVersion)', 'False')
       displayName: Update release
       inputs:
         targetType: 'inline'
