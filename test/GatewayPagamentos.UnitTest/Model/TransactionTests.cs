@@ -27,5 +27,13 @@ namespace GatewayPagamentos.UnitTest.Model
             var transaction = new Transaction(24);
             transaction.Installments.Should().OnlyContain(instalment => instalment.Status == InstallmentStatus.WaitForPayment);
         }
+
+        [Fact]
+        public void ShouldPayAInstallment()
+        {
+            var transaction = new Transaction(24);
+            transaction.PayInstallment(1);
+            transaction.Installments[1].Status.Should().Be(InstallmentStatus.PaidOut);
+        }
     }
 }
