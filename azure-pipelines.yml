@@ -72,7 +72,6 @@ jobs:
           echo "https://$(GIT_HUB_TOKEN):@github.com" > .git/credentials;
     
     - task: PowerShell@2
-      condition: eq('$(isBumpedVersion)', 'false')
       displayName: Checkout $(system.pullRequest.sourceBranch)
       inputs:
         targetType: 'inline'
