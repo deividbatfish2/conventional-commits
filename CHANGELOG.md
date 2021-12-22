@@ -1,4 +1,7 @@
 # Change Log\n\nAll notable changes to this project will be documented in this file. See [versionize](https://github.com/saintedlama/versionize) for commit guidelines.\n
+<a name="1.0.27"></a>
+## [1.0.27](https://www.github.com/deividbatfish2/conventional-commits/releases/tag/v1.0.27) (2021-12-22)
+
 <a name="1.0.26"></a>
 ## [1.0.26](https://www.github.com/deividbatfish2/conventional-commits/releases/tag/v1.0.26) (2021-12-21)
 
