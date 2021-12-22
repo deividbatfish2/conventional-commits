@@ -29,5 +29,12 @@ namespace GatewayPagamentos.Application.Model
             }
             return installments;
         }
+
+        public void PayInstallment(int numberOfInstallment)
+        {
+            var installment = Installments[numberOfInstallment];
+            installment.Status = InstallmentStatus.PaidOut;
+            Installments[numberOfInstallment] = installment;
+        }
     }
 }
