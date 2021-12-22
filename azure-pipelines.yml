@@ -8,12 +8,15 @@ pool:
   vmImage: 'ubuntu-20.04'
 
 variables:
+  - group: vault
   - name: applicationProjectPath
     value: '**/*.Application/*.csproj'
   - name: unitTestProjectPath
     value: '**/*.UnitTest/*.csproj'
   - name: buildConfiguration
     value: 'release'
+  - name: isBumpedVersion
+    value: 'true' 
 
 jobs:
  - job: Run_Unit_Tests_on_PR_to_develop
@@ -53,12 +56,37 @@ jobs:
       displayName: 'Publish code coverage report'
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        summaryFileLocation: '**/*/coverage.cobertura.xml'
   
  - job: Build_Application
    # Run only on PRs to develop since the pull request origin don't be the main branch
    condition: and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['system.pullRequest.targetBranch'], 'main'))
+   
    steps:
+    - task: PowerShell@2
+      displayName: SET Credentials
+      inputs:
+        targetType: 'inline'
+        script: |
+          git config credential.helper "store --file=.git/credentials";
+          echo "https://$(GIT_HUB_TOKEN):@github.com" > .git/credentials;
+    
+    - task: PowerShell@2
+      displayName: Checkout $(system.pullRequest.sourceBranch)
+      inputs:
+        targetType: 'inline'
+        script: 'git checkout $(system.pullRequest.sourceBranch)'
+      
+    - task: Bash@3
+      displayName: SET PR REASON
+      inputs:
+        targetType: 'inline'
+        script: |
+          git log -1 --oneline
+          RESULT=$(echo "$(git log -1 --oneline)" | grep -o -E "chore\(release\):\s[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}" && echo "true" || echo "false")
+          RESULT=$(echo $RESULT | grep -o -E "true|false")
+          echo "##vso[task.setvariable variable=isBumpedVersion]$RESULT"
+
     - task: UseDotNet@2
       displayName: Use dotnet core SDK 5
       inputs:
@@ -67,42 +95,60 @@ jobs:
         installationPath: $(Agent.ToolsDirectory)/dotnet
 
     - task: DotNetCoreCLI@2
+      condition: eq(variables['isBumpedVersion'], 'false')
       displayName: Install versionize
       inputs:
         command: 'custom'
-        custom: 'dotnet tool install --global Versionize'
+        custom: 'tool'
+        arguments: 'install --global Versionize'
 
-    - task: DotNetCoreCLI@2
+    - task: PowerShell@2
+      condition: eq(variables['isBumpedVersion'], 'false')
+      displayName: Set Repository
+      inputs:
+        targetType: 'inline'
+        script: 'git remote set-url origin https://github.com/deividbatfish2/conventional-commits.git'
+
+    - task: PowerShell@2
+      condition: eq(variables['isBumpedVersion'], 'false')
+      displayName: Set Commiter
+      inputs:
+        targetType: 'inline'
+        script: 'git config user.name XablauT ; git config user.email hebin80893@ztymm.com'
+
+    - task: PowerShell@2
+      condition: eq(variables['isBumpedVersion'], 'false')
       displayName: Bumped Version
       inputs:
-        command: 'custom'
-        custom: 'dotnet versionize'
+        targetType: 'inline'
+        script: 'versionize'
     
-    - task: DotNetCoreCLI@2
-      displayName: Restore Test Project
-      inputs:
-        command: 'restore'
-        projects: '$(unitTestProjectPath)'
+    # - task: DotNetCoreCLI@2
+    #   displayName: Restore Test Project
+    #   inputs:
+    #     command: 'restore'
+    #     projects: '$(unitTestProjectPath)'
     
-    - task: DotNetCoreCLI@2
-      displayName: Build Test Project
-      inputs:
-        command: 'build'
-        projects: '$(unitTestProjectPath)'
-        arguments: --no-restore --configuration $(buildConfiguration)
+    # - task: DotNetCoreCLI@2
+    #   displayName: Build Test Project
+    #   inputs:
+    #     command: 'build'
+    #     projects: '$(unitTestProjectPath)'
+    #     arguments: --no-restore --configuration $(buildConfiguration)
     
-    - task: DotNetCoreCLI@2
-      displayName: Run Unit Tests
-      inputs:
-        command: 'test'
-        projects: '$(unitTestProjectPath)'
-        arguments: --collect:"XPlat Code Coverage" --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
-        publishTestResults: true
+    # - task: DotNetCoreCLI@2
+    #   displayName: Run Unit Tests
+    #   inputs:
+    #     command: 'test'
+    #     projects: '$(unitTestProjectPath)'
+    #     arguments: --collect:"XPlat Code Coverage" --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+    #     publishTestResults: true
 
-    - task: PublishCodeCoverageResults@1
-      displayName: 'Publish code coverage report'
-      inputs:
-        codeCoverageTool: 'Cobertura'
+    # - task: PublishCodeCoverageResults@1
+    #   displayName: 'Publish code coverage report'
+    #   inputs:
+    #     codeCoverageTool: 'Cobertura'
+    #     summaryFileLocation: '**/*/coverage.cobertura.xml'
     
     - task: DotNetCoreCLI@2
       displayName: Restore Application Project
@@ -125,9 +171,8 @@ jobs:
         publishLocation: 'Container'
     
     - task: PowerShell@2
+      condition: eq(variables['isBumpedVersion'], 'false')
       displayName: Update release
       inputs:
         targetType: 'inline'
-        script: 'git push --follow-tags origin $(variables[''System.PullRequest.SourceBranch''])'
-      
-      
+        script: 'git push --follow-tags origin $(system.pullRequest.sourceBranch)'
