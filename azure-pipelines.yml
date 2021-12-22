@@ -141,7 +141,7 @@ jobs:
       inputs:
         command: 'test'
         projects: '$(unitTestProjectPath)'
-        arguments: --collect:"XPlat Code Coverage" --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+        arguments: --collect:"XPlat Code Coverage"
         publishTestResults: true
 
     - task: PublishCodeCoverageResults@1
