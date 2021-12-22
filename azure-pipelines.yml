@@ -104,7 +104,7 @@ jobs:
         installationPath: $(Agent.ToolsDirectory)/dotnet
 
     - task: DotNetCoreCLI@2
-      condition: eq('$(isBumpedVersion)', 'false')
+      condition: eq('false', $(isBumpedVersion))
       displayName: Install versionize
       inputs:
         command: 'custom'
