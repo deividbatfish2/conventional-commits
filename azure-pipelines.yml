@@ -123,32 +123,32 @@ jobs:
         targetType: 'inline'
         script: 'versionize'
     
-    # - task: DotNetCoreCLI@2
-    #   displayName: Restore Test Project
-    #   inputs:
-    #     command: 'restore'
-    #     projects: '$(unitTestProjectPath)'
+    - task: DotNetCoreCLI@2
+      displayName: Restore Test Project
+      inputs:
+        command: 'restore'
+        projects: '$(unitTestProjectPath)'
     
-    # - task: DotNetCoreCLI@2
-    #   displayName: Build Test Project
-    #   inputs:
-    #     command: 'build'
-    #     projects: '$(unitTestProjectPath)'
-    #     arguments: --no-restore --configuration $(buildConfiguration)
+    - task: DotNetCoreCLI@2
+      displayName: Build Test Project
+      inputs:
+        command: 'build'
+        projects: '$(unitTestProjectPath)'
+        arguments: --no-restore --configuration $(buildConfiguration)
     
-    # - task: DotNetCoreCLI@2
-    #   displayName: Run Unit Tests
-    #   inputs:
-    #     command: 'test'
-    #     projects: '$(unitTestProjectPath)'
-    #     arguments: --collect:"XPlat Code Coverage" --DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
-    #     publishTestResults: true
+    - task: DotNetCoreCLI@2
+      displayName: Run Unit Tests
+      inputs:
+        command: 'test'
+        projects: '$(unitTestProjectPath)'
+        arguments: --collect:"XPlat Code Coverage"
+        publishTestResults: true
 
-    # - task: PublishCodeCoverageResults@1
-    #   displayName: 'Publish code coverage report'
-    #   inputs:
-    #     codeCoverageTool: 'Cobertura'
-    #     summaryFileLocation: '**/*/coverage.cobertura.xml'
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish code coverage report'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '**/*/coverage.cobertura.xml'
     
     - task: DotNetCoreCLI@2
       displayName: Restore Application Project
